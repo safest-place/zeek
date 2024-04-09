@@ -20,6 +20,10 @@ export {
 		## The command that was issued
 		cmd:	string	&log;
 		## The argument issued to the command
+		version:  string &log;
+		salt:     string &log;
+		username: string &log;
+		password: string &log;
 		arg:	string	&log;
 		## Did the server tell us that the command succeeded?
 		success: bool &log &optional;
@@ -49,7 +53,22 @@ event zeek_init() &priority=5
 	Analyzer::register_for_ports(Analyzer::ANALYZER_MYSQL, ports);
 	}
 
-event mysql_handshake(c: connection, username: string)
+event mysql_server_version(c: connection, ver: string, salt: string)
+	{
+	if (! c?$mysql)
+		{
+		local info: Info;
+		info$ts = network_time();
+		info$uid = c$uid;
+		info$id = c$id;
+		info$cmd = "server_greeting";
+		info$salt = salt;
+		info$version = version;
+		c$mysql = info;
+		}
+	}
+
+event mysql_handshake(c: connection, username: string, password: string)
 	{
 	if ( ! c?$mysql )
 		{
@@ -58,8 +77,17 @@ event mysql_handshake(c: connection, username: string)
 		info$uid = c$uid;
 		info$id = c$id;
 		info$cmd = "login";
-		info$arg = username;
+		info$username = username;
+		info$password = password;
 		c$mysql = info;
+		Conn::register_removal_hook(c, finalize_mysql);
+		}
+	else
+		{
+		info = c$mysql;
+		info$cmd = "login";
+		info$username = username;
+		info$password = password;
 		Conn::register_removal_hook(c, finalize_mysql);
 		}
 	}

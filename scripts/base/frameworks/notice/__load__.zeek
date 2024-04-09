@@ -1,5 +1,5 @@
 @load ./main
-@load ./weird
+#@load ./weird
 
 # There should be no overhead imposed by loading notice actions so we
 # load them all.
