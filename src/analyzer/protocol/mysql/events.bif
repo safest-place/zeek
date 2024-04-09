@@ -72,7 +72,7 @@ event mysql_result_row%(c: connection, row: string_vec%);
 ## ver: The server version string.
 ##
 ## .. zeek:see:: mysql_command_request mysql_error mysql_ok mysql_handshake
-event mysql_server_version%(c: connection, ver: string%);
+event mysql_server_version%(c: connection, ver: string, salt: string%);
 
 ## Generated for a client handshake response packet, which includes the username the client is attempting
 ## to connect as.
@@ -85,5 +85,5 @@ event mysql_server_version%(c: connection, ver: string%);
 ## username: The username supplied by the client
 ##
 ## .. zeek:see:: mysql_command_request mysql_error mysql_ok mysql_server_version
-event mysql_handshake%(c: connection, username: string%);
+event mysql_handshake%(c: connection, username: string, password: string%);
 

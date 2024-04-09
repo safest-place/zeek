@@ -8,11 +8,13 @@ refine flow MySQL_Flow += {
 			if ( ${msg.version} == 10 )
 				zeek::BifEvent::enqueue_mysql_server_version(connection()->zeek_analyzer(),
 				                                       connection()->zeek_analyzer()->Conn(),
-				                                       zeek::make_intrusive<zeek::StringVal>(c_str(${msg.handshake10.server_version})));
+				                                       zeek::make_intrusive<zeek::StringVal>(c_str(${msg.handshake10.server_version})),
+													   zeek::make_intrusive<zeek::StringVal>(c_str(${msg.handshake10.auth_plugin_data_part_1})));
 			if ( ${msg.version} == 9 )
 				zeek::BifEvent::enqueue_mysql_server_version(connection()->zeek_analyzer(),
 				                                       connection()->zeek_analyzer()->Conn(),
-				                                       zeek::make_intrusive<zeek::StringVal>(c_str(${msg.handshake9.server_version})));
+				                                       zeek::make_intrusive<zeek::StringVal>(c_str(${msg.handshake9.server_version})),
+													   zeek::make_intrusive<zeek::StringVal>(c_str(${msg.handshake9.scramble})));
 			}
 		return true;
 		%}
@@ -34,11 +36,14 @@ refine flow MySQL_Flow += {
 			if ( ${msg.version} == 10 && ${msg.v10_response.credentials}->size() > 0 )
 				zeek::BifEvent::enqueue_mysql_handshake(connection()->zeek_analyzer(),
 				                                  connection()->zeek_analyzer()->Conn(),
-				                                  zeek::make_intrusive<zeek::StringVal>(c_str(${msg.v10_response.credentials[0].username})));
+				                                  zeek::make_intrusive<zeek::StringVal>(c_str(${msg.v10_response.username})),
+												  zeek::make_intrusive<zeek::StringVal>(c_str(${msg.v10_response.password}))
+												  );
 			if ( ${msg.version} == 9 )
 				zeek::BifEvent::enqueue_mysql_handshake(connection()->zeek_analyzer(),
 				                                  connection()->zeek_analyzer()->Conn(),
-				                                  zeek::make_intrusive<zeek::StringVal>(c_str(${msg.v9_response.username})));
+				                                  zeek::make_intrusive<zeek::StringVal>(c_str(${msg.v9_response.username})),
+												  zeek::make_intrusive<zeek::StringVal>(c_str(${msg.v9_response.password})),);
 			}
 		return true;
 		%}
