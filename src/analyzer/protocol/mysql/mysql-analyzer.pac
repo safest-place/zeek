@@ -43,7 +43,7 @@ refine flow MySQL_Flow += {
 				zeek::BifEvent::enqueue_mysql_handshake(connection()->zeek_analyzer(),
 				                                  connection()->zeek_analyzer()->Conn(),
 				                                  zeek::make_intrusive<zeek::StringVal>(c_str(${msg.v9_response.username})),
-												  zeek::make_intrusive<zeek::StringVal>(c_str(${msg.v9_response.password})),);
+												  zeek::make_intrusive<zeek::StringVal>(c_str(${msg.v9_response.password})));
 			}
 		return true;
 		%}
