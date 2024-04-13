@@ -245,7 +245,7 @@ type Handshake_Response_Packet_v10 = record {
 	pad                   : padding[23];
 	username              : NUL_String;
 	pad                   : padding[1];
-	password              : bytestring &length=20;
+	password              : bytestring &length=40;
 	auth_plugin_name      : NUL_String;
 	connection_attributes : bytestring &restofdata;
 } &let {
