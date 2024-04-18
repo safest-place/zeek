@@ -16,7 +16,7 @@ refine flow MySQL_Flow += {
                                                                ${msg.handshake10.auth_plugin_data_part_1[5]},
                                                                ${msg.handshake10.auth_plugin_data_part_1[6]},
                                                                ${msg.handshake10.auth_plugin_data_part_1[7]}
-                                                            )
+                                                            );
                     zeek::BifEvent::enqueue_mysql_server_version(connection()->zeek_analyzer(),
                         connection()->zeek_analyzer()->Conn(),
                         zeek::make_intrusive<zeek::StringVal>(c_str(${msg.handshake10.server_version})),
