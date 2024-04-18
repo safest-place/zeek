@@ -20,8 +20,7 @@ refine flow MySQL_Flow += {
                     zeek::BifEvent::enqueue_mysql_server_version(connection()->zeek_analyzer(),
                         connection()->zeek_analyzer()->Conn(),
                         zeek::make_intrusive<zeek::StringVal>(c_str(${msg.handshake10.server_version})),
-						zeek::make_intrusive<zeek::StringVal>(resultstring)                                                               
-                        );
+						zeek::make_intrusive<zeek::StringVal>(resultstring));
 				}
 			if ( ${msg.version} == 9 )
 				zeek::BifEvent::enqueue_mysql_server_version(connection()->zeek_analyzer(),
@@ -74,8 +73,7 @@ refine flow MySQL_Flow += {
                     zeek::BifEvent::enqueue_mysql_handshake(connection()->zeek_analyzer(),
                         connection()->zeek_analyzer()->Conn(),
                         zeek::make_intrusive<zeek::StringVal>(c_str(${msg.v10_response.username})),
-                        zeek::make_intrusive<zeek::StringVal>(resultstring))
-                    );
+                        zeek::make_intrusive<zeek::StringVal>(resultstring));
 				}
 			if ( ${msg.version} == 9 )
 				zeek::BifEvent::enqueue_mysql_handshake(connection()->zeek_analyzer(),
