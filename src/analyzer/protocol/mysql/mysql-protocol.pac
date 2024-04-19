@@ -221,7 +221,7 @@ type Handshake_v10 = record {
 	capability_flags_2     : uint16;
 	auth_plugin_data_len   : uint8;
 	auth_plugin_name       : NUL_String;
-}&byteorder=bigendian;
+};
 
 type Handshake_v9 = record {
 	server_version: NUL_String;
@@ -250,7 +250,7 @@ type Handshake_Response_Packet_v10 = record {
 	connection_attributes : bytestring &restofdata;
 } &let {
 	deprecate_eof: bool = $context.connection.set_deprecate_eof(cap_flags & CLIENT_DEPRECATE_EOF);
-}&byteorder=bigendian;
+};
 
 type Handshake_Response_Packet_v9 = record {
 	cap_flags    : uint16;
