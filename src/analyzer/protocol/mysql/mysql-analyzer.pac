@@ -7,11 +7,15 @@ refine flow MySQL_Flow += {
 			{
 			if ( ${msg.version} == 10 )
 				{
-                    std::string resultstring = zeek::util::fmt("%02x%02x%02x%02x",
+                    std::string resultstring = zeek::util::fmt("%02x%02x%02x%02x%02x%02x%02x%02x",
                                                                ${msg.handshake10.auth_plugin_data_part_1[0]},
                                                                ${msg.handshake10.auth_plugin_data_part_1[1]},
                                                                ${msg.handshake10.auth_plugin_data_part_1[2]},
-                                                               ${msg.handshake10.auth_plugin_data_part_1[3]}
+                                                               ${msg.handshake10.auth_plugin_data_part_1[3]},
+															   ${msg.handshake10.auth_plugin_data_part_1[4]},
+															   ${msg.handshake10.auth_plugin_data_part_1[5]},
+															   ${msg.handshake10.auth_plugin_data_part_1[6]},
+															   ${msg.handshake10.auth_plugin_data_part_1[7]}
                                                             );
                     zeek::BifEvent::enqueue_mysql_server_version(connection()->zeek_analyzer(),
                         connection()->zeek_analyzer()->Conn(),
@@ -43,7 +47,8 @@ refine flow MySQL_Flow += {
 			{
 			if ( ${msg.version} == 10 )
                 {
-					std::string resultstring = zeek::util::fmt("%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x",
+					std::string resultstring = zeek::util::fmt("%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x"
+                                                               "%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x",
                                                                ${msg.v10_response.password[0]},
                                                                ${msg.v10_response.password[1]},
                                                                ${msg.v10_response.password[2]},
@@ -53,7 +58,17 @@ refine flow MySQL_Flow += {
                                                                ${msg.v10_response.password[6]},
                                                                ${msg.v10_response.password[7]},
                                                                ${msg.v10_response.password[8]},
-                                                               ${msg.v10_response.password[9]}
+                                                               ${msg.v10_response.password[9]},
+															   ${msg.v10_response.password[10]},
+															   ${msg.v10_response.password[11]},
+															   ${msg.v10_response.password[12]},
+															   ${msg.v10_response.password[13]},
+															   ${msg.v10_response.password[14]},
+															   ${msg.v10_response.password[15]},
+															   ${msg.v10_response.password[16]},
+															   ${msg.v10_response.password[17]},
+															   ${msg.v10_response.password[18]},
+															   ${msg.v10_response.password[19]}
                                                                );
                     zeek::BifEvent::enqueue_mysql_handshake(connection()->zeek_analyzer(),
                         connection()->zeek_analyzer()->Conn(),
