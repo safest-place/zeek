@@ -213,7 +213,7 @@ type Initial_Handshake_Packet = record {
 type Handshake_v10 = record {
 	server_version         : NUL_String;
 	connection_id          : uint32;
-	auth_plugin_data_part_1: uint16[4];
+	auth_plugin_data_part_1: uint16[4] &byteorder=bigendian;
 	filler_1               : uint8;
 	capability_flag_1      : uint16;
 	character_set          : uint8;
@@ -221,7 +221,7 @@ type Handshake_v10 = record {
 	capability_flags_2     : uint16;
 	auth_plugin_data_len   : uint8;
 	auth_plugin_name       : NUL_String;
-} &byteorder = bigendian;
+};
 
 type Handshake_v9 = record {
 	server_version: NUL_String;
@@ -245,12 +245,12 @@ type Handshake_Response_Packet_v10 = record {
 	pad                   : padding[23];
 	username              : NUL_String;
 	pad                   : padding[1];
-	password              : uint16[10];
+	password              : uint16[10] &byteorder=bigendian;
 	auth_plugin_name      : NUL_String;
 	connection_attributes : bytestring &restofdata;
 } &let {
 	deprecate_eof: bool = $context.connection.set_deprecate_eof(cap_flags & CLIENT_DEPRECATE_EOF);
-} &byteorder = bigendian;
+};
 
 type Handshake_Response_Packet_v9 = record {
 	cap_flags    : uint16;
