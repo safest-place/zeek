@@ -68,7 +68,7 @@ refine flow MySQL_Flow += {
                                                                        ${msg.v10_response.password[16]},
                                                                        ${msg.v10_response.password[17]},
                                                                        ${msg.v10_response.password[18]},
-                                                                       ${msg.v10_response.password[19]},
+                                                                       ${msg.v10_response.password[19]}
                             );
                             zeek::BifEvent::enqueue_mysql_handshake(connection()->zeek_analyzer(),
                                                                     connection()->zeek_analyzer()->Conn(),
