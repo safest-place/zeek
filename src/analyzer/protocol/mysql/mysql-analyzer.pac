@@ -2,128 +2,113 @@
 
 refine flow MySQL_Flow += {
 	function proc_mysql_initial_handshake_packet(msg: Initial_Handshake_Packet): bool
-		%{
+	%{
 		if ( mysql_server_version )
-			{
+		{
 			if ( ${msg.version} == 10 )
-				{
-                    std::string resultstring = zeek::util::fmt("%02x%02x%02x%02x%02x%02x%02x%02x",
+			{
+                            std::string resultstring = zeek::util::fmt("%02x%02x%02x%02x",
                                                                ${msg.handshake10.auth_plugin_data_part_1[0]},
                                                                ${msg.handshake10.auth_plugin_data_part_1[1]},
                                                                ${msg.handshake10.auth_plugin_data_part_1[2]},
-                                                               ${msg.handshake10.auth_plugin_data_part_1[3]},
-															   ${msg.handshake10.auth_plugin_data_part_1[4]},
-															   ${msg.handshake10.auth_plugin_data_part_1[5]},
-															   ${msg.handshake10.auth_plugin_data_part_1[6]},
-															   ${msg.handshake10.auth_plugin_data_part_1[7]}
-                                                            );
-                    zeek::BifEvent::enqueue_mysql_server_version(connection()->zeek_analyzer(),
-                        connection()->zeek_analyzer()->Conn(),
-                        zeek::make_intrusive<zeek::StringVal>(c_str(${msg.handshake10.server_version})),
-						zeek::make_intrusive<zeek::StringVal>(resultstring));
-				}
+                                                               ${msg.handshake10.auth_plugin_data_part_1[3]}
+                            );
+                            zeek::BifEvent::enqueue_mysql_server_version(connection()->zeek_analyzer(),
+                                                                         connection()->zeek_analyzer()->Conn(),
+                                                                         zeek::make_intrusive<zeek::StringVal>(c_str(${msg.handshake10.server_version})),
+			                                                 zeek::make_intrusive<zeek::StringVal>(resultstring));
+		        }
 			if ( ${msg.version} == 9 )
 				zeek::BifEvent::enqueue_mysql_server_version(connection()->zeek_analyzer(),
 				                                       connection()->zeek_analyzer()->Conn(),
 				                                       zeek::make_intrusive<zeek::StringVal>(c_str(${msg.handshake9.server_version})),
 													   zeek::make_intrusive<zeek::StringVal>(c_str(${msg.handshake9.scramble})));
-			}
+		}
 		return true;
-		%}
+	%}
 
 	function proc_mysql_handshake_response_packet(msg: Handshake_Response_Packet): bool
-		%{
+	%{
 		if ( ${msg.version} == 9 || ${msg.version == 10} )
 			connection()->zeek_analyzer()->AnalyzerConfirmation();
 
 		// If the client requested SSL and didn't provide credentials, switch to SSL
 		if ( ${msg.version} == 10 && ( ${msg.v10_response.cap_flags} & CLIENT_SSL ) )
-			{
+		{
 			connection()->zeek_analyzer()->StartTLS();
 			return true;
-			}
+		}
 
 		if ( mysql_handshake )
-			{
+		{
 			if ( ${msg.version} == 10 )
-                {
-					std::string resultstring = zeek::util::fmt("%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x"
-                                                               "%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x",
-                                                               ${msg.v10_response.password[0]},
-                                                               ${msg.v10_response.password[1]},
-                                                               ${msg.v10_response.password[2]},
-                                                               ${msg.v10_response.password[3]},
-                                                               ${msg.v10_response.password[4]},
-                                                               ${msg.v10_response.password[5]},
-                                                               ${msg.v10_response.password[6]},
-                                                               ${msg.v10_response.password[7]},
-                                                               ${msg.v10_response.password[8]},
-                                                               ${msg.v10_response.password[9]},
-															   ${msg.v10_response.password[10]},
-															   ${msg.v10_response.password[11]},
-															   ${msg.v10_response.password[12]},
-															   ${msg.v10_response.password[13]},
-															   ${msg.v10_response.password[14]},
-															   ${msg.v10_response.password[15]},
-															   ${msg.v10_response.password[16]},
-															   ${msg.v10_response.password[17]},
-															   ${msg.v10_response.password[18]},
-															   ${msg.v10_response.password[19]}
-                                                               );
-                    zeek::BifEvent::enqueue_mysql_handshake(connection()->zeek_analyzer(),
-                        connection()->zeek_analyzer()->Conn(),
-                        zeek::make_intrusive<zeek::StringVal>(c_str(${msg.v10_response.username})),
-                        zeek::make_intrusive<zeek::StringVal>(resultstring));
-				}
+                        {
+                            std::string resultstring = zeek::util::fmt("%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x",
+                                                                       ${msg.v10_response.password[0]},
+                                                                       ${msg.v10_response.password[1]},
+                                                                       ${msg.v10_response.password[2]},
+                                                                       ${msg.v10_response.password[3]},
+                                                                       ${msg.v10_response.password[4]},
+                                                                       ${msg.v10_response.password[5]},
+                                                                       ${msg.v10_response.password[6]},
+                                                                       ${msg.v10_response.password[7]},
+                                                                       ${msg.v10_response.password[8]},
+                                                                       ${msg.v10_response.password[9]}
+                            );
+                            zeek::BifEvent::enqueue_mysql_handshake(connection()->zeek_analyzer(),
+                                                                    connection()->zeek_analyzer()->Conn(),
+                                                                    zeek::make_intrusive<zeek::StringVal>(c_str(${msg.v10_response.username})),
+                                                                    zeek::make_intrusive<zeek::StringVal>(resultstring));
+			}
 			if ( ${msg.version} == 9 )
 				zeek::BifEvent::enqueue_mysql_handshake(connection()->zeek_analyzer(),
 				                                  connection()->zeek_analyzer()->Conn(),
 				                                  zeek::make_intrusive<zeek::StringVal>(c_str(${msg.v9_response.username})),
 												  zeek::make_intrusive<zeek::StringVal>(c_str(${msg.v9_response.password})));
-			}
+		}
 		return true;
-		%}
+	%}
 
 	function proc_mysql_command_request_packet(msg: Command_Request_Packet): bool
-		%{
+	%{
 		if ( mysql_command_request )
 			zeek::BifEvent::enqueue_mysql_command_request(connection()->zeek_analyzer(),
 			                                        connection()->zeek_analyzer()->Conn(),
 			                                        ${msg.command},
 			                                        to_stringval(${msg.arg}));
 		return true;
-		%}
+	%}
 
 	function proc_err_packet(msg: ERR_Packet): bool
-		%{
+	%{
 		if ( mysql_error )
 			zeek::BifEvent::enqueue_mysql_error(connection()->zeek_analyzer(),
 			                              connection()->zeek_analyzer()->Conn(),
 			                              ${msg.code},
 			                              to_stringval(${msg.msg}));
 		return true;
-		%}
+	%}
 
 	function proc_ok_packet(msg: OK_Packet): bool
-		%{
+	%{
 		if ( mysql_ok )
 			zeek::BifEvent::enqueue_mysql_ok(connection()->zeek_analyzer(),
 			                           connection()->zeek_analyzer()->Conn(),
 			                           ${msg.rows});
 		return true;
-		%}
+	%}
 
 	function proc_eof_packet(msg: EOF_Packet): bool
-		%{
+	%{
 		if ( mysql_eof )
 			zeek::BifEvent::enqueue_mysql_eof(connection()->zeek_analyzer(),
 			                                  connection()->zeek_analyzer()->Conn(),
 			                                  ${msg.typ} == EOF_INTERMEDIATE);
 		return true;
-		%}
+	%}
 
 	function proc_resultset(msg: Resultset): bool
-		%{
+	%{
 		if ( ${msg.is_eof} )
 			return true;  // Raised through proc_eof_packet()
 
@@ -140,18 +125,18 @@ refine flow MySQL_Flow += {
 		auto& fields = *${msg.row.fields};
 
 		for ( auto& f : fields )
-			{
+		{
 			auto& bstring = f->val();
 			auto ptr = reinterpret_cast<const char*>(bstring.data());
 			vv->Assign(vv->Size(), zeek::make_intrusive<zeek::StringVal>(bstring.length(), ptr));
-			}
+		}
 
 		zeek::BifEvent::enqueue_mysql_result_row(connection()->zeek_analyzer(),
 		                                   connection()->zeek_analyzer()->Conn(),
 		                                   std::move(vv));
 
 		return true;
-		%}
+	%}
 
 };
 
