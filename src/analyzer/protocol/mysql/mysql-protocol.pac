@@ -213,7 +213,7 @@ type Initial_Handshake_Packet = record {
 type Handshake_v10 = record {
 	server_version         : NUL_String;
 	connection_id          : uint32;
-	auth_plugin_data_part_1: uint16[4] &byteorder=bigendian;
+	auth_plugin_data_part_1: uint8[8];
 	filler_1               : uint8;
 	capability_flag_1      : uint16;
 	character_set          : uint8;
@@ -245,7 +245,7 @@ type Handshake_Response_Packet_v10 = record {
 	pad                   : padding[23];
 	username              : NUL_String;
 	pad                   : padding[1];
-	password              : uint16[10] &byteorder=bigendian;
+	password              : uint8[20];
 	auth_plugin_name      : NUL_String;
 	connection_attributes : bytestring &restofdata;
 } &let {
