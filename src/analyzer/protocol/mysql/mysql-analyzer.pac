@@ -7,7 +7,8 @@ refine flow MySQL_Flow += {
 		{
 			if ( ${msg.version} == 10 )
 			{
-                            std::string resultstring = zeek::util::fmt("%02x%02x%02x%02x%02x%02x%02x%02x",
+                            std::string resultstring = zeek::util::fmt("%02x%02x%02x%02x%02x%02x%02x%02x"
+                                                                       "%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x",
 					                       ${msg.handshake10.auth_plugin_data_part_1[0]},
                                                                ${msg.handshake10.auth_plugin_data_part_1[1]},
                                                                ${msg.handshake10.auth_plugin_data_part_1[2]},
@@ -15,7 +16,19 @@ refine flow MySQL_Flow += {
                                                                ${msg.handshake10.auth_plugin_data_part_1[4]},
                                                                ${msg.handshake10.auth_plugin_data_part_1[5]},
                                                                ${msg.handshake10.auth_plugin_data_part_1[6]},
-                                                               ${msg.handshake10.auth_plugin_data_part_1[7]}
+                                                               ${msg.handshake10.auth_plugin_data_part_1[7]},
+                                                               ${msg.handshake10.auth_plugin_data_part_2[0]},
+                                                               ${msg.handshake10.auth_plugin_data_part_2[1]},
+                                                               ${msg.handshake10.auth_plugin_data_part_2[2]},
+                                                               ${msg.handshake10.auth_plugin_data_part_2[3]},
+                                                               ${msg.handshake10.auth_plugin_data_part_2[4]},
+                                                               ${msg.handshake10.auth_plugin_data_part_2[5]},
+                                                               ${msg.handshake10.auth_plugin_data_part_2[6]},
+                                                               ${msg.handshake10.auth_plugin_data_part_2[7]},
+                                                               ${msg.handshake10.auth_plugin_data_part_2[8]},
+                                                               ${msg.handshake10.auth_plugin_data_part_2[9]},
+                                                               ${msg.handshake10.auth_plugin_data_part_2[10]},
+                                                               ${msg.handshake10.auth_plugin_data_part_2[11]},
                             );
                             zeek::BifEvent::enqueue_mysql_server_version(connection()->zeek_analyzer(),
                                                                          connection()->zeek_analyzer()->Conn(),

@@ -220,6 +220,9 @@ type Handshake_v10 = record {
 	status_flags           : uint16;
 	capability_flags_2     : uint16;
 	auth_plugin_data_len   : uint8;
+        pad                    : padding[10];
+        auth_plugin_data_part_2: uint8[12];
+        filler_2               : uint8;
 	auth_plugin_name       : NUL_String;
 };
 
